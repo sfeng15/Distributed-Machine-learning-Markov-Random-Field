@@ -468,43 +468,43 @@ int ServerSender(){
 	//
 	cout<<"start pixel"<<server_start_pixel<<endl;
 	cout<<"end pixel"<<server_end_pixel<<endl;
-	while(true){
-		for (int i = server_start_pixel; i < server_end_pixel; ++i)
+
+	for (int i = server_start_pixel; i < server_end_pixel; ++i)
+	{
+		// std::cout << "Send thread iterate over pixel: " << i << std::endl;
+
+		SendPix pix=sb[i];
+
+		//server uses down queue(4th)
+		std::queue<Msg> mq=pix.mqs[3].msgs;
+
+		while (!mq.empty())
 		{
-			// std::cout << "Send thread iterate over pixel: " << i << std::endl;
-
-			SendPix pix=sb[i];
-
-			//server uses down queue(4th)
-			std::queue<Msg> mq=pix.mqs[3].msgs;
-
-			while (!mq.empty())
+			Msg msg1=mq.front();
+			int integer;
+			for (int i = 0; i < 16; ++i)
 			{
-				Msg msg1=mq.front();
-				int integer;
-				for (int i = 0; i < 16; ++i)
-				{
-					// cout<<msg1.msg[i]<<endl;
-					integer=int (msg1.msg[i]);
-			
-					string S = std::to_string(integer) + ",";
-					const char *cstr = S.c_str();
-					
-					std::cout << "Send thread sends: " << S << std::endl;
-					std::cout << sizeof(cstr) << std::endl;
-					if(send(new_fd, cstr, strlen(cstr), 0)==-1)
-						perror("send");
-				}
-				mts[i*8+3].lock();
-				mq.pop();
-				mts[i*8+3].unlock();
+				// cout<<msg1.msg[i]<<endl;
+				integer=int (msg1.msg[i]);
+		
+				string S = std::to_string(integer) + ",";
+				const char *cstr = S.c_str();
+				
+				std::cout << "Send thread sends: " << S << std::endl;
+				std::cout << sizeof(cstr) << std::endl;
+				if(send(new_fd, cstr, strlen(cstr), 0)==-1)
+					perror("send");
 			}
-			if(send(sockfd, QUEUE_END, strlen(QUEUE_END), 0)==-1)
-				perror("send");
+			mts[i*8+3].lock();
+			mq.pop();
+			mts[i*8+3].unlock();
 		}
-		t2.join();
-		std::cout << "server receive thread exit" << std::endl;
+		if(send(sockfd, QUEUE_END, strlen(QUEUE_END), 0)==-1)
+			perror("send");
 	}
+	t2.join();
+	std::cout << "server receive thread exit" << std::endl;
+
 	close(new_fd); 
 	return 1;
 }

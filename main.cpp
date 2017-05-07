@@ -920,7 +920,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                 }
 
                 mts[pos*8+direction].lock();
-                cout<<__LINE__<<endl;
+                cout<<__LINE__<<" "<<pos<<endl;
                 sb[pos].mqs[UP].msgs.push(tmp);
                 mts[pos*8+direction].unlock();
             }
@@ -939,7 +939,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                 }
 
                 mts[pos*8+direction].lock();
-                cout<<__LINE__<<endl;
+                cout<<__LINE__<<" "<<pos<<endl;
                 sb[pos].mqs[DOWN].msgs.push(tmp);
                 mts[pos*8+direction].unlock();
             }

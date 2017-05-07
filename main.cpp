@@ -745,16 +745,20 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
     TYPE new_msg[LABELS+1];
 
 
-	if (mid==1&&pos==1)
-    {
-    	cout<<"pos: "<<pos<<endl;
-    }
 
 
 
     int width = mrf.width;
     int pos = y*width+x;
     int gpos = pos + BD*mid;
+
+
+	if (mid==1&&pos==1)
+    {
+    	cout<<"pos: "<<pos<<endl;
+    }
+
+
 
     for(int i=0; i < LABELS; i++) {
         TYPE min_val = UINT_MAX;

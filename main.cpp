@@ -724,6 +724,10 @@ void InitDataCost(const std::string &left_file, const std::string &right_file, M
             }
         }
     }
+
+    client_start_pixel=(mrf.height)*mrf.width ;// the port users will be connecting to
+	client_end_pixel= (mrf.height)*mrf.width+mrf.width; // the port users will be connecting to
+
 }
 
 int SendMsg(MRF2D &mrf, int x, int y, int direction)

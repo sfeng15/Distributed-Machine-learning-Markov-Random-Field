@@ -728,7 +728,7 @@ void InitDataCost(const std::string &left_file, const std::string &right_file, M
             }
         }
     }
-    cout<<"size of send buffer"<<sizeof(sb)<<endl;
+    cout<<"size of send buffer: "<<sb.size()<<endl;
 
     client_start_pixel=(mrf.height)*mrf.width ;// the port users will be connecting to
 	client_end_pixel= (mrf.height)*mrf.width+mrf.width; // the port users will be connecting to

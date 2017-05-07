@@ -150,7 +150,7 @@ void ClientSender(int sockfd) {
 			while (!mq.empty())
 			{
 
-				cout<<__LINE__<<endl;
+				// cout<<__LINE__<<endl;
 				Msg msg1=mq.front();
 				int integer;
 				for (int i = 0; i < 16; ++i)
@@ -292,7 +292,7 @@ int ClientReceiver(int argc, char *argv[]){
 				{
 					label=0;
 					mts[idxPixel*8+4+2].lock();
-					cout<<__LINE__<<endl;
+					// cout<<__LINE__<<endl;
 					mq.push(msg1);
 					mts[idxPixel*8+4+2].unlock();
 				}
@@ -367,7 +367,7 @@ void ServerReceiver(int new_fd) {
 				{
 					label=0;
 					mts[idxPixel*8+4+3].lock();
-					cout<<__LINE__<<endl;
+					// cout<<__LINE__<<endl;
 					mq.push(msg1);
 					mts[idxPixel*8+4+3].unlock();
 				}
@@ -964,7 +964,7 @@ void BP(MRF2D &mrf)
             int it_flag = 1;
             for(int d=mrf.grid[pos].direction; d<4;d++){
                 int succ=0;
-                if(!(((x==0)&&d==0)||((x==(width-1)&&d==1)) || (y==0&&d==2) || (y+mid*height==(height*num-1)&&d==3))){
+                if(!(((x==0)&&d==0)||((x==(width-1)&&d==1)) || (y+mid*height==0&&d==2) || (y+mid*height==(height*num-1)&&d==3))){
                     succ=SendMsg(mrf, x, y, d);
                     if(!succ){
                         mrf.grid[pos].direction = d;

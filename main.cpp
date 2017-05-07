@@ -710,6 +710,27 @@ void InitDataCost(const std::string &left_file, const std::string &right_file, M
     sb.resize(total);
     rb.resize(total);
 
+    
+
+
+
+    struct Msg tempMsg;
+    for (int i = 0; i < 16; ++i)
+    {
+    	tempMsg.msg[i]=0;
+    }
+
+    for (int i = 0; i < total; ++i)
+    {
+	    for (int j = 0; j < 4; ++j)
+	    {
+	    	    rb[i].mqs[j].msgs.push(tempMsg);
+	    }
+    }
+
+
+
+
     mts = new std::mutex[total*8];
 
     // Initialise all messages to zero

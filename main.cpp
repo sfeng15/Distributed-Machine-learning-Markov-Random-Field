@@ -909,6 +909,10 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
 
         case 2:
             if (((mid*BD<=(gpos-width))&&((gpos-width)<(mid+1)*BD))){
+                if (mid==1&&pos==1)
+                {
+                	cout<<"pos: "<<pos<<endl;
+                }
                 for(int i=0; i < LABELS+1; i++) {
                     mrf.grid[(y-1)*width + x].msg[DOWN][i] = new_msg[i];
                 }
@@ -965,11 +969,7 @@ void BP(MRF2D &mrf)
             for(int d=mrf.grid[pos].direction; d<4;d++){
                 int succ=0;
                 if(!(((x==0)&&d==0)||((x==(width-1)&&d==1)) || (y+mid*height==0&&d==2) || (y+mid*height==(height*num-1)&&d==3))){
-                    if(mid==1&&pos==1){
-                    	cout<<"pos: "<<pos<<endl;	
-                    }
                     succ=SendMsg(mrf, x, y, d);
-
                     if(!succ){
                         mrf.grid[pos].direction = d;
                         break;

@@ -125,99 +125,60 @@ void *get_in_addr(struct sockaddr *sa)
 #define MAXPIXEL 200
 
 
-// int setUpClientSocket(int argc, char *argv[]){
-// 	int sockfd;
-// 	struct addrinfo hints, *servinfo, *p;
-// 	int rv;
-// 	char s[INET6_ADDRSTRLEN];
-// 	if (argc != 2) {
-// 		fprintf(stderr,"usage: client hostname\n");
-// 		exit(1);
-// 	}
-// 	memset(&hints, 0, sizeof hints);
-// 	hints.ai_family = AF_UNSPEC;
-// 	hints.ai_socktype = SOCK_STREAM;
-// 	if ((rv = getaddrinfo(argv[2], PORT, &hints, &servinfo)) != 0) {
-// 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-// 		return 1;
-//  	}
-//  	// loop through all the results and connect to the first we can
-//  	for(p = servinfo; p != NULL; p = p->ai_next) {
-// 	 	if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
-// 			perror("client: socket");
-// 		 	continue;
-// 		}
-// 		if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-// 		 	close(sockfd);
-// 		 	perror("client: connect");
-// 		 	continue;
-// 		}
-// 		break;
-// 	}
-// 	if (p == NULL) {
-// 		fprintf(stderr, "client: failed to connect\n");
-// 		return 2;
-// 	}
-// 	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
-// 	s, sizeof s);
-// 	printf("client: connecting to %s\n", s);
-// 	freeaddrinfo(servinfo); // all done with this structure
-
-// 	return sockfd;
-
-// }
-
-
-
 
 
 
 void ClientSender(int sockfd) {
 
-	std::cout << "This is client Send thread " << std::endl;
+	std::cout << "client Send thread start" << std::endl;
 
+	cout<<"start pixel"<<client_start_pixel<<endl;
+	cout<<"end pixel"<<client_end_pixel<<endl;
 
-
-	for (int i = client_start_pixel; i < client_end_pixel; ++i)
-	{
-		std::cout << "Send thread iterate over pixel: " << i << std::endl;
-		SendPix pix=sb[i];
-
-
-		//client is the bottom image, use the 3rd up message queue
-		std::queue<Msg> mq=pix.mqs[2].msgs;
-
-		while (!mq.empty())
+	while(true){
+		for (int i = client_start_pixel; i < client_end_pixel; ++i)
 		{
-			Msg msg1=mq.front();
-			int integer;
-			for (int i = 0; i < 16; ++i)
-			{
-				// cout<<msg1.msg[i]<<endl;
-				integer=int (msg1.msg[i]);
-		
-				string S = std::to_string(integer) + ",";
-				const char *cstr = S.c_str();
-				
-				std::cout << "Send thread sends: " << S << std::endl;
-				std::cout << sizeof(cstr) << std::endl;
-				if(send(sockfd, cstr, strlen(cstr), 0)==-1)
-					perror("send");
-			}
-			mts[i*8+2].lock();
-			mq.pop();
-			mts[i*8+2].unlock();
-		}
-		if(send(sockfd, QUEUE_END, strlen(QUEUE_END), 0)==-1)
-			perror("send");
-	}
+			std::cout << "Send thread iterate over pixel: " << i << std::endl;
+			SendPix pix=sb[i];
 
-	while(1);
+
+			//client is the bottom image, use the 3rd up message queue
+			std::queue<Msg> mq=pix.mqs[2].msgs;
+
+			while (!mq.empty())
+			{
+				Msg msg1=mq.front();
+				int integer;
+				for (int i = 0; i < 16; ++i)
+				{
+					// cout<<msg1.msg[i]<<endl;
+					integer=int (msg1.msg[i]);
+			
+					string S = std::to_string(integer) + ",";
+					const char *cstr = S.c_str();
+					
+					std::cout << "Send thread sends: " << S << std::endl;
+					std::cout << sizeof(cstr) << std::endl;
+					if(send(sockfd, cstr, strlen(cstr), 0)==-1)
+						perror("send");
+				}
+				mts[i*8+2].lock();
+				mq.pop();
+				mts[i*8+2].unlock();
+			}
+			if(send(sockfd, QUEUE_END, strlen(QUEUE_END), 0)==-1)
+				perror("send");
+		}
+
+	}
+	std::cout << "client Send thread exit" << std::endl;
+
+
 }
 
 int ClientReceiver(int argc, char *argv[]){
 
-	std::cout << "This is client receive thread " << std::endl;
+	std::cout << "client receive thread start" << std::endl;
 
 
 
@@ -337,6 +298,8 @@ int ClientReceiver(int argc, char *argv[]){
 			}
 		}
  	}
+ 	std::cout << "client receive thread exit" << std::endl;
+
 	t2.join();
 	close(sockfd);
 
@@ -345,7 +308,7 @@ int ClientReceiver(int argc, char *argv[]){
 
 
 void ServerReceiver(int new_fd) {
-	std::cout << "This is server receive thread " << std::endl;
+	std::cout << "server receive thread start" << std::endl;
 
   	char buf[MAXDATASIZE];
 
@@ -410,6 +373,8 @@ void ServerReceiver(int new_fd) {
 			}
 		}
  	}
+ 	std::cout << "server receive thread exit" << std::endl;
+
   	
 }
 int setUpServerSocket(int sockfd){
@@ -482,7 +447,7 @@ int setUpServerSocket(int sockfd){
 
 }
 int ServerSender(){
-	std::cout << "This is server Send thread " << std::endl;
+	std::cout << "server Send thread start" << std::endl;
 
 	//setup socket connection
 	int sockfd=0;
@@ -495,6 +460,9 @@ int ServerSender(){
 	//
 	//
 	//
+	cout<<"start pixel"<<server_start_pixel<<endl;
+	cout<<"end pixel"<<server_end_pixel<<endl;
+
 	for (int i = server_start_pixel; i < server_end_pixel; ++i)
 	{
 		std::cout << "Send thread iterate over pixel: " << i << std::endl;
@@ -529,7 +497,10 @@ int ServerSender(){
 			perror("send");
 	}
 	t2.join();
+	std::cout << "server receive thread exit" << std::endl;
+
 	close(new_fd); 
+	return 1;
 }
 
 

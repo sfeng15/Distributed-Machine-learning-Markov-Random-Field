@@ -141,7 +141,7 @@ void ClientSender(int sockfd) {
 			std::cout << "Send thread iterate over pixel: " << i << std::endl;
 			SendPix pix=sb[i];
 
-			cout<<__LINE__<<endl;
+			
 			//client is the bottom image, use the 3rd up message queue
 			std::queue<Msg> mq=pix.mqs[2].msgs;
 			
@@ -149,6 +149,7 @@ void ClientSender(int sockfd) {
 
 			while (!mq.empty())
 			{
+
 				cout<<__LINE__<<endl;
 				Msg msg1=mq.front();
 				int integer;
@@ -291,6 +292,7 @@ int ClientReceiver(int argc, char *argv[]){
 				{
 					label=0;
 					mts[idxPixel*8+4+2].lock();
+					cout<<__LINE__<<endl;
 					mq.push(msg1);
 					mts[idxPixel*8+4+2].unlock();
 				}
@@ -365,6 +367,7 @@ void ServerReceiver(int new_fd) {
 				{
 					label=0;
 					mts[idxPixel*8+4+3].lock();
+					cout<<__LINE__<<endl;
 					mq.push(msg1);
 					mts[idxPixel*8+4+3].unlock();
 				}
@@ -754,7 +757,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
             cout << "L" <<endl; 
 #endif
             int block=1;
-            mts[pos*8].lock();
+            mts[pos*8+4].lock();
             while(!(rb[pos].mqs[LEFT].msgs.empty())){
                 Msg tmp = rb[pos].mqs[LEFT].msgs.front();
                 if(abs(tmp.msg[LABELS]-mrf.grid[pos].itix)<=S){
@@ -769,7 +772,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                     rb[pos].mqs[LEFT].msgs.pop();
                 }
             }
-            mts[pos*8].unlock();
+            mts[pos*8+4].unlock();
             if(block) return 0;
         }
         if (!((mid*BD<=(gpos+1))&&((gpos+1)<(mid+1)*BD)) &&
@@ -778,7 +781,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
             cout << "R" <<endl;
 #endif
             int block=1;
-            mts[pos*8+1].lock();
+            mts[pos*8+4+1].lock();
             while(!(rb[pos].mqs[RIGHT].msgs.empty())){
                 Msg tmp = rb[pos].mqs[RIGHT].msgs.front();
                 if(abs(tmp.msg[LABELS]-mrf.grid[pos].itix)<=S){
@@ -793,7 +796,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                     rb[pos].mqs[RIGHT].msgs.pop();
                 }
             }
-            mts[pos*8+1].unlock();
+            mts[pos*8+4+1].unlock();
             if(block) return 0;
         }
         if(!((mid*BD<=(gpos-width))&&((gpos-width)<(mid+1)*BD))&&
@@ -802,7 +805,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
             cout << "U" <<endl; 
 #endif
             int block=1;
-            mts[pos*8+2].lock();
+            mts[pos*8+4+2].lock();
             while(!(rb[pos].mqs[UP].msgs.empty())){
                 Msg tmp = rb[pos].mqs[UP].msgs.front();
                 if(abs(tmp.msg[LABELS]-mrf.grid[pos].itix)<=S){
@@ -817,7 +820,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                     rb[pos].mqs[UP].msgs.pop();
                 }
             }
-            mts[pos*8+2].unlock();
+            mts[pos*8+4+2].unlock();
 //            cout<<block<<endl;
             if(block) return 0;
         }
@@ -828,7 +831,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
             cout << "D" <<endl; 
 #endif
             int block=1;
-            mts[pos*8+3].lock();
+            mts[pos*8+4+3].lock();
             while(!(rb[pos].mqs[DOWN].msgs.empty())){
                 Msg tmp = rb[pos].mqs[DOWN].msgs.front();
                 if(abs(tmp.msg[LABELS]-mrf.grid[pos].itix)<=S){
@@ -843,7 +846,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                     rb[pos].mqs[DOWN].msgs.pop();
                 }
             }
-            mts[pos*8+3].unlock();
+            mts[pos*8+4+3].unlock();
             if(block) return 0;
         }
 

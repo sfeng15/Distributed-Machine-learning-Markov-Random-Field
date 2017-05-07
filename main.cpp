@@ -138,14 +138,14 @@ void ClientSender(int sockfd) {
 	while(true){
 		for (int i = client_start_pixel; i < client_end_pixel; ++i)
 		{
-			std::cout << "Send thread iterate over pixel: " << i << std::endl;
+			// std::cout << "Send thread iterate over pixel: " << i << std::endl;
 			SendPix pix=sb[i];
 
 			
 			//client is the bottom image, use the 3rd up message queue
 			std::queue<Msg> mq=pix.mqs[2].msgs;
 			
-			cout<<__LINE__<<endl;
+			// cout<<__LINE__<<endl;
 
 			while (!mq.empty())
 			{
@@ -258,7 +258,7 @@ int ClientReceiver(int argc, char *argv[]){
 		buf[numbytes] = '\0';
 		string S(buf);
 		
-		cout << "Receive thread receives: " << S << endl;
+		// cout << "Receive thread receives: " << S << endl;
 
 
 		RecvPix pix=rb[idxPixel];
@@ -271,7 +271,7 @@ int ClientReceiver(int argc, char *argv[]){
 			{
 				int i_dec = std::stoi (partial);
 
-				cout << "Receive thread receives: " << i_dec << endl;
+				// cout << "Receive thread receives: " << i_dec << endl;
 
 
 				if (i_dec==std::stoi(QUEUE_END))
@@ -332,7 +332,7 @@ void ServerReceiver(int new_fd) {
 
 		buf[numbytes] = '\0';
 		string S(buf);
-		cout << "Receive thread receives: " << S << endl;
+		// cout << "Receive thread receives: " << S << endl;
 
 		RecvPix pix=rb[idxPixel];
 
@@ -346,7 +346,7 @@ void ServerReceiver(int new_fd) {
 			{
 				int i_dec = std::stoi (partial);
 				// cout << typeid(i_dec).name() << endl;
-				cout << "Receive thread receives: " << i_dec << endl;
+				// cout << "Receive thread receives: " << i_dec << endl;
 
 
 
@@ -471,7 +471,7 @@ int ServerSender(){
 
 	for (int i = server_start_pixel; i < server_end_pixel; ++i)
 	{
-		std::cout << "Send thread iterate over pixel: " << i << std::endl;
+		// std::cout << "Send thread iterate over pixel: " << i << std::endl;
 
 		SendPix pix=sb[i];
 
@@ -920,6 +920,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                 }
 
                 mts[pos*8+direction].lock();
+                cout<<__LINE__<<endl;
                 sb[pos].mqs[UP].msgs.push(tmp);
                 mts[pos*8+direction].unlock();
             }
@@ -938,6 +939,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                 }
 
                 mts[pos*8+direction].lock();
+                cout<<__LINE__<<endl;
                 sb[pos].mqs[DOWN].msgs.push(tmp);
                 mts[pos*8+direction].unlock();
             }

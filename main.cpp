@@ -180,6 +180,7 @@ void ClientSender(int sockfd) {
 
 	for (int i = client_start_pixel; i < client_end_pixel; ++i)
 	{
+		std::cout << "Send thread iterate over pixel: " << i << std::endl;
 		SendPix pix=sb[i];
 
 
@@ -291,6 +292,8 @@ int ClientReceiver(int argc, char *argv[]){
 		}
 		buf[numbytes] = '\0';
 		string S(buf);
+		
+		cout << "Receive thread receives: " << S << endl;
 
 
 		RecvPix pix=rb[idxPixel];
@@ -361,7 +364,7 @@ void ServerReceiver(int new_fd) {
 
 		buf[numbytes] = '\0';
 		string S(buf);
-
+		cout << "Receive thread receives: " << S << endl;
 
 		RecvPix pix=rb[idxPixel];
 
@@ -494,6 +497,8 @@ int ServerSender(){
 	//
 	for (int i = server_start_pixel; i < server_end_pixel; ++i)
 	{
+		std::cout << "Send thread iterate over pixel: " << i << std::endl;
+
 		SendPix pix=sb[i];
 
 		//server uses down queue(4th)

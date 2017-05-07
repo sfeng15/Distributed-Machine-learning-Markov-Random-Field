@@ -141,12 +141,15 @@ void ClientSender(int sockfd) {
 			std::cout << "Send thread iterate over pixel: " << i << std::endl;
 			SendPix pix=sb[i];
 
-
+			cout<<__LINE__<<endl;
 			//client is the bottom image, use the 3rd up message queue
 			std::queue<Msg> mq=pix.mqs[2].msgs;
+			
+			cout<<__LINE__<<endl;
 
 			while (!mq.empty())
 			{
+				cout<<__LINE__<<endl;
 				Msg msg1=mq.front();
 				int integer;
 				for (int i = 0; i < 16; ++i)
@@ -700,6 +703,7 @@ void InitDataCost(const std::string &left_file, const std::string &right_file, M
     BD = total;
 
     mrf.grid.resize(total);
+
     sb.resize(total);
     rb.resize(total);
 

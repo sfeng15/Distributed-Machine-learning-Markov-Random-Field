@@ -964,7 +964,7 @@ void BP(MRF2D &mrf)
             int it_flag = 1;
             for(int d=mrf.grid[pos].direction; d<4;d++){
                 int succ=0;
-                if(!(((x==0)&&d==0)||((x==(width-1)&&d==1)) || (y==0&&d==2) || (y==(height-1)&&d==3))){
+                if(!(((x==0)&&d==0)||((x==(width-1)&&d==1)) || (y==0&&d==2) || (y+mid*height==(height*num-1)&&d==3))){
                     succ=SendMsg(mrf, x, y, d);
                     if(!succ){
                         mrf.grid[pos].direction = d;

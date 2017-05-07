@@ -909,15 +909,16 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
 
         case 2:
             if (((mid*BD<=(gpos-width))&&((gpos-width)<(mid+1)*BD))){
-                if (mid==1&&pos==1)
-                {
-                	cout<<"pos: "<<pos<<endl;
-                }
+                
                 for(int i=0; i < LABELS+1; i++) {
                     mrf.grid[(y-1)*width + x].msg[DOWN][i] = new_msg[i];
                 }
             }
             else{
+            	if (mid==1&&pos==1)
+                {
+                	cout<<"pos: "<<pos<<endl;
+                }
                 Msg tmp;
                 for(int i=0; i < LABELS+1; i++) {
                     tmp.msg[i] = new_msg[i];

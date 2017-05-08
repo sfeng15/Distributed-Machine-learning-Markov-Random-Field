@@ -44,7 +44,7 @@ const int BP_ITERATIONS = 2;
 const int LABELS = 16;
 const int LAMBDA = 20;
 const int SMOOTHNESS_TRUNC = 2;
-const int S=1;
+const int S=3;
 int BD;
 int mid=1;
 
@@ -535,6 +535,7 @@ int main(int argc, char *argv[])
 
 
    time_t now = time(0);
+time_t old=time(0);
    cout << "start time: " << now << endl;
 
 
@@ -554,25 +555,15 @@ int main(int argc, char *argv[])
 			 preEnergy=curEnergy;
 	        curEnergy = MAP(mrf);
 
-
-	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
+		now=time(0);
+		int diff=now-old;
+	        cout << (i+1) << " " << now << " " << curEnergy << endl;
 	        i++;
 		}while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
 
 		 now = time(0);
 		 cout << "end time: " << now << endl;
  
-
-	    // for(int i=0; i < BP_ITERATIONS; i++) {
-	    //     BP(mrf);
-	    //     //        BP(mrf, LEFT);
-	    //     //        BP(mrf, UP);
-	    //     //        BP(mrf, DOWN);
-
-	    //     TYPE energy = MAP(mrf);
-
-	    //     cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
-	    // }
 
 	    cv::Mat output = cv::Mat::zeros(mrf.height, mrf.width, CV_8U);
 
@@ -609,6 +600,8 @@ int main(int argc, char *argv[])
 	 //        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
 	 //    }
 		int i=0;
+		time_t old=time(0);
+		time_t now=time(0);
 		do{
 			  BP(mrf);
 	        //        BP(mrf, LEFT);
@@ -617,8 +610,8 @@ int main(int argc, char *argv[])
 			 preEnergy=curEnergy;
 	        curEnergy = MAP(mrf);
 
-
-	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
+		int diff=now-old;
+	        cout << (i+1) << " " << diff<<" " << curEnergy << endl;
 	        i++;
 		}while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
 

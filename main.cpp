@@ -552,105 +552,105 @@ int main(int argc, char *argv[])
 
 		std::thread t1(ServerSender);
 
-		// int i=0;
-		// do{
-		// 	  BP(mrf);
-	 //        //        BP(mrf, LEFT);
-	 //        //        BP(mrf, UP);
-	 //        //        BP(mrf, DOWN);
-		// 	 preEnergy=curEnergy;
-	 //        curEnergy = MAP(mrf);
+		int i=0;
+		do{
+			  BP(mrf);
+	        //        BP(mrf, LEFT);
+	        //        BP(mrf, UP);
+	        //        BP(mrf, DOWN);
+			 preEnergy=curEnergy;
+	        curEnergy = MAP(mrf);
 
 
-	 //        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
-	 //        i++;
-		// }while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
+	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
+	        i++;
+		}while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
 
-		//  now = time(0);
-		//  cout << "end time: " << now << endl;
+		 now = time(0);
+		 cout << "end time: " << now << endl;
  
 
-	 //    // for(int i=0; i < BP_ITERATIONS; i++) {
-	 //    //     BP(mrf);
-	 //    //     //        BP(mrf, LEFT);
-	 //    //     //        BP(mrf, UP);
-	 //    //     //        BP(mrf, DOWN);
+	    // for(int i=0; i < BP_ITERATIONS; i++) {
+	    //     BP(mrf);
+	    //     //        BP(mrf, LEFT);
+	    //     //        BP(mrf, UP);
+	    //     //        BP(mrf, DOWN);
 
-	 //    //     TYPE energy = MAP(mrf);
+	    //     TYPE energy = MAP(mrf);
 
-	 //    //     cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
-	 //    // }
+	    //     cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
+	    // }
 
-	 //    cv::Mat output = cv::Mat::zeros(mrf.height, mrf.width, CV_8U);
+	    cv::Mat output = cv::Mat::zeros(mrf.height, mrf.width, CV_8U);
 
-	 //    for(int y=LABELS; y < mrf.height-LABELS; y++) {
-	 //        for(int x=LABELS; x < mrf.width-LABELS; x++) {
-	 //            // Increase the intensity so we can see it
-	 //            output.at<uchar>(y,x) = mrf.grid[y*mrf.width+x].best_assignment * (256/LABELS);
-	 //            //			cout << mrf.grid[y*mrf.width+x].itix <<" ";
-	 //        }
-	 //    }
+	    for(int y=LABELS; y < mrf.height-LABELS; y++) {
+	        for(int x=LABELS; x < mrf.width-LABELS; x++) {
+	            // Increase the intensity so we can see it
+	            output.at<uchar>(y,x) = mrf.grid[y*mrf.width+x].best_assignment * (256/LABELS);
+	            //			cout << mrf.grid[y*mrf.width+x].itix <<" ";
+	        }
+	    }
 
-	 //    //    cv::namedWindow("main", CV_WINDOW_AUTOSIZE);
-	 //    //    cv::imshow("main", output);
-	 //    //    cv::waitKey(0);
+	    //    cv::namedWindow("main", CV_WINDOW_AUTOSIZE);
+	    //    cv::imshow("main", output);
+	    //    cv::waitKey(0);
 
-	 //    cout << "Saving results to output.png" << endl;
-	 //    cv::imwrite("output.png", output);
+	    cout << "Saving results to output.png" << endl;
+	    cv::imwrite("output.png", output);
 
-	 //    delete[] mts;
+	    delete[] mts;
 
 	    t1.join();
 
 	}
 	else{
 		std::thread t1(ClientReceiver,argc, argv);
-		// for(int i=0; i < BP_ITERATIONS; i++) {
-	 //        BP(mrf);
-	 //        //        BP(mrf, LEFT);
-	 //        //        BP(mrf, UP);
-	 //        //        BP(mrf, DOWN);
+		for(int i=0; i < BP_ITERATIONS; i++) {
+	        BP(mrf);
+	        //        BP(mrf, LEFT);
+	        //        BP(mrf, UP);
+	        //        BP(mrf, DOWN);
 
-	 //        TYPE energy = MAP(mrf);
+	        TYPE energy = MAP(mrf);
 
-	 //        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
-	 //    }
-		// int i=0;
-		// do{
-		// 	  BP(mrf);
-	 //        //        BP(mrf, LEFT);
-	 //        //        BP(mrf, UP);
-	 //        //        BP(mrf, DOWN);
-		// 	 preEnergy=curEnergy;
-	 //        curEnergy = MAP(mrf);
-
-
-	 //        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
-	 //        i++;
-		// }while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
-
-		// now = time(0);
-		//  cout << "end time: " << now << endl;
-
-	 //    cv::Mat output = cv::Mat::zeros(mrf.height, mrf.width, CV_8U);
-
-	 //    for(int y=LABELS; y < mrf.height-LABELS; y++) {
-	 //        for(int x=LABELS; x < mrf.width-LABELS; x++) {
-	 //            // Increase the intensity so we can see it
-	 //            output.at<uchar>(y,x) = mrf.grid[y*mrf.width+x].best_assignment * (256/LABELS);
-	 //            //			cout << mrf.grid[y*mrf.width+x].itix <<" ";
-	 //        }
-	 //    }
+	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
+	    }
+		int i=0;
+		do{
+			  BP(mrf);
+	        //        BP(mrf, LEFT);
+	        //        BP(mrf, UP);
+	        //        BP(mrf, DOWN);
+			 preEnergy=curEnergy;
+	        curEnergy = MAP(mrf);
 
 
-	 //    //    cv::namedWindow("main", CV_WINDOW_AUTOSIZE);
-	 //    //    cv::imshow("main", output);
-	 //    //    cv::waitKey(0);
+	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
+	        i++;
+		}while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
 
-	 //    cout << "Saving results to output.png" << endl;
-	 //    cv::imwrite("output.png", output);
+		now = time(0);
+		 cout << "end time: " << now << endl;
 
-	 //    delete[] mts;
+	    cv::Mat output = cv::Mat::zeros(mrf.height, mrf.width, CV_8U);
+
+	    for(int y=LABELS; y < mrf.height-LABELS; y++) {
+	        for(int x=LABELS; x < mrf.width-LABELS; x++) {
+	            // Increase the intensity so we can see it
+	            output.at<uchar>(y,x) = mrf.grid[y*mrf.width+x].best_assignment * (256/LABELS);
+	            //			cout << mrf.grid[y*mrf.width+x].itix <<" ";
+	        }
+	    }
+
+
+	    //    cv::namedWindow("main", CV_WINDOW_AUTOSIZE);
+	    //    cv::imshow("main", output);
+	    //    cv::waitKey(0);
+
+	    cout << "Saving results to output.png" << endl;
+	    cv::imwrite("output.png", output);
+
+	    delete[] mts;
 
 	    t1.join();
 	}

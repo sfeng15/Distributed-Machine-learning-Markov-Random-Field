@@ -542,6 +542,7 @@ int main(int argc, char *argv[])
 
 
    time_t now = time(0);
+time_t old=time(0);
    cout << "start time: " << now << endl;
 
 
@@ -551,7 +552,7 @@ int main(int argc, char *argv[])
 	{
 
 		std::thread t1(ServerSender);
-
+//		t1.join();
 		int i=0;
 		do{
 			  BP(mrf);
@@ -561,8 +562,9 @@ int main(int argc, char *argv[])
 			 preEnergy=curEnergy;
 	        curEnergy = MAP(mrf);
 
-
-	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
+		now=time(0);
+		int dif=now-old;
+	        cout << (i+1) << " " <<dif<<" "<< curEnergy << endl;
 	        i++;
 		}while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
 
@@ -581,6 +583,7 @@ int main(int argc, char *argv[])
 	    //     cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
 	    // }
 
+		t1.join();
 	    cv::Mat output = cv::Mat::zeros(mrf.height, mrf.width, CV_8U);
 
 	    for(int y=LABELS; y < mrf.height-LABELS; y++) {
@@ -600,21 +603,21 @@ int main(int argc, char *argv[])
 
 	    delete[] mts;
 
-	    t1.join();
+	  //  t1.join();
 
 	}
 	else{
 		std::thread t1(ClientReceiver,argc, argv);
-		for(int i=0; i < BP_ITERATIONS; i++) {
-	        BP(mrf);
+//		for(int i=0; i < BP_ITERATIONS; i++) {
+//	        BP(mrf);
 	        //        BP(mrf, LEFT);
 	        //        BP(mrf, UP);
 	        //        BP(mrf, DOWN);
 
-	        TYPE energy = MAP(mrf);
+//	        TYPE energy = MAP(mrf);
 
-	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
-	    }
+//	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << energy << endl;
+//	    }
 		int i=0;
 		do{
 			  BP(mrf);
@@ -624,8 +627,9 @@ int main(int argc, char *argv[])
 			 preEnergy=curEnergy;
 	        curEnergy = MAP(mrf);
 
-
-	        cout << "iteration " << (i+1) << "/" << BP_ITERATIONS << ", energy = " << curEnergy << endl;
+		now=time(0);
+		int diff=now-old;
+	        cout  << (i+1) << " " << diff << "  " << curEnergy << endl;
 	        i++;
 		}while((double)(curEnergy-preEnergy)/(double)preEnergy>=CHANGE_RATE);
 
@@ -790,7 +794,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
 
     for(int i=0; i < LABELS; i++) {
         TYPE min_val = UINT_MAX;
-
+/*
         if(!((mid*BD<=(gpos-1))&&((gpos-1)<(mid+1)*BD))&&
                 !((!(gpos%width))||(gpos%width==(width-1)) || (gpos<width) || (gpos >= num*BD-width))) {
 #ifdef D 
@@ -889,7 +893,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
             mts[pos*8+4+3].unlock();
             if(block) return 0;
         }
-
+*/
         for(int j=0; j < LABELS; j++) {
             TYPE p = 0;
 
@@ -962,7 +966,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                 }
 
                 mts[pos*8+direction].lock();
-                cout<<__LINE__<<" "<<pos<<endl;
+                //cout<<__LINE__<<" "<<pos<<endl;
                 sb[pos].mqs[UP].msgs.push(tmp);
                 mts[pos*8+direction].unlock();
             }
@@ -981,7 +985,7 @@ int SendMsg(MRF2D &mrf, int x, int y, int direction)
                 }
 
                 mts[pos*8+direction].lock();
-                cout<<__LINE__<<" "<<pos<<endl;
+                //cout<<__LINE__<<" "<<pos<<endl;
                 sb[pos].mqs[DOWN].msgs.push(tmp);
                 mts[pos*8+direction].unlock();
             }
@@ -1003,8 +1007,59 @@ void BP(MRF2D &mrf)
     for(int y=0; y < height; y++) {
         for(int x=0; x < width; x++) {
             int pos = y*width+x;
+    int gpos = pos + BD*mid;
             int it_flag = 1;
-            for(int d=mrf.grid[pos].direction; d<4;d++){
+            	int bf=0;
+//            for(int d=mrf.grid[pos].direction; d<4;d++){
+	if (((mrf.height-1)*width<=gpos)&&(gpos<mrf.height*width)){
+
+            int block=1;
+            mts[pos*8+4+3].lock();
+            while(!(rb[pos].mqs[DOWN].msgs.empty())){
+                Msg tmp = rb[pos].mqs[DOWN].msgs.front();
+                if(abs(tmp.msg[LABELS]-mrf.grid[pos].itix)<=S){
+                    for(int l=0; l<LABELS; l++){
+                        mrf.grid[y*width+x].msg[DOWN][l]=tmp.msg[l];
+                    }
+                    block=0;
+                    rb[pos].mqs[DOWN].msgs.pop();
+                    break;
+                }
+                else{
+                    rb[pos].mqs[DOWN].msgs.pop();
+                }
+            }
+            mts[pos*8+4+3].unlock();
+            if(block) bf= 1;
+}
+else if (((mrf.height)*width<=gpos)&&(gpos<(mrf.height+1)*width)){
+//if(pos==1 && d==2) cout << "U" <<endl;
+            int block=1;
+            mts[pos*8+4+2].lock();
+//if(pos&&(rb[pos].mqs[UP].msgs.empty())) cout << "empty" << endl;
+            while(!(rb[pos].mqs[UP].msgs.empty())){
+                Msg tmp = rb[pos].mqs[UP].msgs.front();
+//if(pos==1 && d==2) cout << tmp.msg[LABELS] << "	" << mrf.grid[pos].itix << "	" << pos << endl;
+                if(abs(tmp.msg[LABELS]-mrf.grid[pos].itix)<=S){
+                    for(int l=0; l<LABELS; l++){
+                        mrf.grid[y*width+x].msg[UP][l]=tmp.msg[l];
+                    }
+                    block=0;
+//if(pos==1 && d==2) cout << "ok" << "  ";
+                    rb[pos].mqs[UP].msgs.pop();
+                    break;
+                }
+                else{
+                    rb[pos].mqs[UP].msgs.pop();
+                }
+            }
+            mts[pos*8+4+2].unlock();
+//            cout<<block << " "<< pos<<endl;
+            if(block) bf= 1;
+
+}
+
+for(int d=0; d<4;d++){
                 int succ=0;
                 if(!(((x==0)&&d==0)||((x==(width-1)&&d==1)) || (y+mid*height==0&&d==2) || (y+mid*height==(height*num-1)&&d==3))){
                     //

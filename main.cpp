@@ -44,7 +44,7 @@ const int BP_ITERATIONS = 2;
 const int LABELS = 16;
 const int LAMBDA = 20;
 const int SMOOTHNESS_TRUNC = 2;
-const int S=1;
+const int S=2;
 int BD;
 int mid=1;
 

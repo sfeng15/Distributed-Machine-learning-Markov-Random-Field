@@ -318,10 +318,15 @@ void ServerReceiver(int new_fd) {
   	char buf[MAXDATASIZE];
 
  	int  numbytes;
- 	string partial;
  	int idxPixel=0;
  	int label=0;
 
+
+
+	RecvPix pix;
+	//msgQ[3] is the down queue
+	std::queue<Msg> mq;
+	Msg msg1;
 
  	while(true){
 
@@ -330,18 +335,20 @@ void ServerReceiver(int new_fd) {
 			exit(1);
 		}
 
+ 		string partial;
+
 		buf[numbytes] = '\0';
 		string S(buf);
 		// cout << "Receive thread receives: " << S << endl;
 
-		RecvPix pix=rb[idxPixel];
 
-		//msgQ[3] is the down queue
-		std::queue<Msg> mq=pix.mqs[3].msgs;
-		Msg msg1;
 
 
 		for (unsigned int i = 0; i < S.length(); i++) {
+			RecvPix pix=rb[idxPixel];
+			//msgQ[2] is the up queue
+			std::queue<Msg> mq=pix.mqs[2].msgs;
+
 			if (S[i]==',')
 			{
 				int i_dec = std::stoi (partial);
